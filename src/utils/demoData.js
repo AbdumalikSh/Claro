@@ -1,0 +1,3 @@
+export const demoClient = { id: "u1", name: "Alex Morgan", email: "alex@example.com", role: "client", country: "Canada", visa: "Skilled Worker Visa" };
+export const demoConsultant = { id: "c1", name: "Sofia Bennett", email: "sofia@claro.com", role: "consultant" };
+export const initialApps = [{id:"a1",client:"Alex Morgan",type:"Skilled Worker Visa",country:"Canada",status:"In review",progress:68,next:"Proof of funds",due:"Nov 18"},{id:"a2",client:"Priya Shah",type:"Student Visa",country:"United Kingdom",status:"Awaiting documents",progress:42,next:"Academic transcript",due:"Nov 20"},{id:"a3",client:"Daniel Kim",type:"Visitor Visa",country:"United States",status:"Ready to submit",progress:91,next:"Final review",due:"Nov 22"}];
