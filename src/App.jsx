@@ -29,11 +29,11 @@ export default function App() {
   const consultant = user.role === "consultant";
   const nav = consultant
     ? ["Overview", "Clients", "Documents", "Calendar", "Consultations", "Messages"]
-    : ["Overview", "My application", "Documents", "Calendar", "Consultations", "Ask your PDFs", "Requirements"];
+    : ["Overview", "My application", "Documents", "Calendar", "Consultations", "Visa assistant", "Requirements"];
   const navIcons = {
     Overview: <LayoutDashboard />, Clients: <Users />, "My application": <FileText />,
     Documents: <FileCheck2 />, Calendar: <CalendarDays />, Consultations: <CalendarDays />,
-    Messages: <MessageCircle />, Requirements: <CircleHelp />, "Ask your PDFs": <Bot />,
+    Messages: <MessageCircle />, Requirements: <CircleHelp />, "Visa assistant": <Bot />,
   };
 
   return (
@@ -52,7 +52,7 @@ export default function App() {
           {nav.map((item, i) => (
             <button
               key={item}
-              className={`nav-item ${section === item ? "active" : ""} ${item === "Ask your PDFs" ? "rag-nav" : ""}`}
+              className={`nav-item ${section === item ? "active" : ""} ${item === "Visa assistant" ? "rag-nav" : ""}`}
               onClick={() => {
                 setSection(item);
                 setMenuOpen(false);
@@ -138,7 +138,7 @@ export default function App() {
             setModal={setModal}
             setSection={setSection}
           />
-        ) : section === "Ask your PDFs" && !consultant ? (
+        ) : section === "Visa assistant" && !consultant ? (
           <RagAssistantPage key={user.id} user={user} />
         ) : (
           <PortalPage
@@ -178,7 +178,7 @@ export default function App() {
           onBook={addConsultation}
         />
       )}
-      {!consultant && section !== "Ask your PDFs" && <button className="rag-launcher" onClick={() => setSection("Ask your PDFs")} aria-label="Open Ask your PDFs"><Bot size={22}/><span>Ask your PDFs</span></button>}
+      {!consultant && section !== "Visa assistant" && <button className="rag-launcher" onClick={() => setSection("Visa assistant")} aria-label="Open Visa assistant"><Bot size={22}/><span>Ask about visas</span></button>}
       <Toaster position="top-right" toastOptions={{ duration: 3200, style: { fontFamily: "DM Sans, sans-serif", fontSize: "14px", borderRadius: "12px" } }} />
     </div>
   );

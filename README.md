@@ -1,6 +1,6 @@
 # Claro visa portal
 
-React and Express demo portal for clients and visa consultants. Demo accounts and application data are in memory. Uploaded RAG PDFs and their vector index are kept on the Express server under `server/data/rag/`.
+React and Express demo portal for visa clients and consultants. Demo accounts and application data are in memory. The client Visa Assistant uses one shared visa guide PDF; clients cannot upload or replace it.
 
 ## Start the app
 
@@ -11,17 +11,23 @@ npm run dev:full
 
 Open `http://localhost:5173`. Demo client: `alex@example.com` / `demo123`. Demo consultant: `sofia@claro.com` / `demo123`.
 
-## Client PDF assistant
+For the complete step-by-step startup and chatbot troubleshooting guide, see [RUNNING.md](./RUNNING.md).
 
-The **Ask your PDFs** page is available to client accounts only. It supports PDF upload, per-file search selection, page-level source citations, multiple conversations, and session-scoped chat history. Chat history is stored in the browser's `sessionStorage`; PDFs and their index are stored locally by client account on the Express server. Scanned PDFs need OCR before upload.
+## Set up the shared visa assistant
 
-The service has a built-in local token-vector fallback, so PDF extraction, indexing, and retrieval work without Python or a database. For semantic embeddings and generated answers, copy `.env.example` to `.env` and configure a provider:
+Claro's shared guide is included at `server/data/visa-guide.pdf`. For deployment, keep that file with the Express server, or set `RAG_KNOWLEDGE_PDF` in `.env` to its server-side path. The app indexes and searches this one PDF for every client. There is no client PDF upload route or document picker. If the guide isn't present on a deployment, clients see a setup message and can return later.
 
-- **OpenAI-compatible API:** set `OPENAI_API_KEY`, `OPENAI_MODEL`, and optionally `OPENAI_BASE_URL`. Set `EMBEDDING_MODEL` too to use provider embeddings; otherwise indexing uses the built-in local vectorizer.
-- **Ollama:** run `ollama pull qwen2.5:3b` and `ollama pull nomic-embed-text`, set `OLLAMA_CHAT_MODEL=qwen2.5:3b`, and set `RAG_EMBEDDING_PROVIDER=ollama`.
+The assistant runs both embedding and answer generation through Ollama on the Claro backend host. Clients do not need Ollama, a model, or an API key. Install Ollama on the machine running Express, then pull the models there:
 
-With no chat model configured, the assistant returns the most relevant PDF passages and their citations rather than inventing a generated answer.
+```bash
+ollama pull qwen2.5:3b
+ollama pull nomic-embed-text
+```
 
-When an external embedding provider is configured, extracted PDF text is sent to it to create vectors. When an external chat model is configured, the question, recent conversation turns, and retrieved passages are sent to it to generate the answer. Original PDF files and the index remain on the Express server. Ollama can keep model processing on the local machine.
+Copy `.env.example` to `.env` if you need different paths, model names, or an Ollama URL. The default Ollama URL is `http://localhost:11434`. Keep the Ollama service running on the backend host. On a deployed site, deploy Express on a server that has enough CPU/GPU memory for the models; if Ollama runs on a separate machine, point `OLLAMA_BASE_URL` and `OLLAMA_OPENAI_BASE_URL` to that private service. Do not expose Ollama directly to the public internet.
 
-PDF API routes are mounted at `/api/rag`: `GET /documents`, `POST /upload`, and `POST /ask`. The other demo API endpoints remain under `/api`.
+The Node/Express service extracts PDF text, chunks it by page, creates local embeddings with Ollama, stores one shared vector index on the server, retrieves relevant passages, and asks the chat model for a cited answer. Citations include the original PDF filename and page. Scanned PDFs need OCR before they can be searched. Chat history is saved in the browser tab's `sessionStorage`.
+
+When the configured Ollama models are not running, the assistant reports that it is temporarily unavailable. No third-party API key or Python service is used.
+
+RAG routes: `GET /api/rag/status` and `POST /api/rag/ask`. Other demo API endpoints remain under `/api`.
