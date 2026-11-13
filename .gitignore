@@ -1,3 +1,6 @@
 node_modules/
+dist/
+.vercel/
 .env
-server/data/rag/
+.env.*
+!.env.example

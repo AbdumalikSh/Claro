@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { ArrowRight, Bell, Bot, CalendarDays, Check, ChevronDown, ChevronRight, CircleHelp, FileCheck2, FileText, Globe2, LayoutDashboard, LogOut, Menu, MessageCircle, Search, Settings2, Sparkles, Users, X } from "lucide-react";
+import { ArrowRight, Bell, CalendarDays, Check, ChevronDown, ChevronRight, CircleHelp, FileCheck2, FileText, Globe2, LayoutDashboard, LogOut, Menu, MessageCircle, Search, Settings2, Sparkles, Users, X } from "lucide-react";
 import AuthPage from "./pages/AuthPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import PortalPage from "./pages/PortalPage.jsx";
-import RagAssistantPage from "./pages/RagAssistantPage.jsx";
 import Modal from "./components/Modal.jsx";
 import { Toaster, toast } from "react-hot-toast";
 import { initials } from "./utils/format.js";
@@ -29,11 +28,11 @@ export default function App() {
   const consultant = user.role === "consultant";
   const nav = consultant
     ? ["Overview", "Clients", "Documents", "Calendar", "Consultations", "Messages"]
-    : ["Overview", "My application", "Documents", "Calendar", "Consultations", "Visa assistant", "Requirements"];
+    : ["Overview", "My application", "Documents", "Calendar", "Consultations", "Requirements"];
   const navIcons = {
     Overview: <LayoutDashboard />, Clients: <Users />, "My application": <FileText />,
     Documents: <FileCheck2 />, Calendar: <CalendarDays />, Consultations: <CalendarDays />,
-    Messages: <MessageCircle />, Requirements: <CircleHelp />, "Visa assistant": <Bot />,
+    Messages: <MessageCircle />, Requirements: <CircleHelp />,
   };
 
   return (
@@ -52,7 +51,7 @@ export default function App() {
           {nav.map((item, i) => (
             <button
               key={item}
-              className={`nav-item ${section === item ? "active" : ""} ${item === "Visa assistant" ? "rag-nav" : ""}`}
+              className={`nav-item ${section === item ? "active" : ""}`}
               onClick={() => {
                 setSection(item);
                 setMenuOpen(false);
@@ -138,8 +137,6 @@ export default function App() {
             setModal={setModal}
             setSection={setSection}
           />
-        ) : section === "Visa assistant" && !consultant ? (
-          <RagAssistantPage key={user.id} user={user} />
         ) : (
           <PortalPage
             section={section}
@@ -178,7 +175,6 @@ export default function App() {
           onBook={addConsultation}
         />
       )}
-      {!consultant && section !== "Visa assistant" && <button className="rag-launcher" onClick={() => setSection("Visa assistant")} aria-label="Open Visa assistant"><Bot size={22}/><span>Ask about visas</span></button>}
       <Toaster position="top-right" toastOptions={{ duration: 3200, style: { fontFamily: "DM Sans, sans-serif", fontSize: "14px", borderRadius: "12px" } }} />
     </div>
   );
