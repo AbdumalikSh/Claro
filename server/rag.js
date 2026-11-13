@@ -5,7 +5,10 @@ import crypto from "node:crypto";
 import pdfParse from "pdf-parse/lib/pdf-parse.js";
 
 const PDF_PATH = path.resolve(process.env.RAG_KNOWLEDGE_PDF || "server/data/visa-guide.pdf");
-const INDEX_PATH = path.resolve(process.env.RAG_INDEX_PATH || "server/data/rag/visa-guide-index.json");
+const defaultIndexPath = process.env.VERCEL
+  ? "/tmp/claro-visa-guide-index.json"
+  : "server/data/rag/visa-guide-index.json";
+const INDEX_PATH = path.resolve(process.env.RAG_INDEX_PATH || defaultIndexPath);
 const CHUNK_SIZE = 900;
 const CHUNK_OVERLAP = 160;
 const CHAT_MODEL = process.env.OLLAMA_CHAT_MODEL || "qwen2.5:3b";

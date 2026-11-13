@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { addUser, findByCredentials, publicUser } from './authStore.js';
 
 dotenv.config();
@@ -32,4 +34,8 @@ app.post('/api/auth/login', (req, res) => {
 app.get('/api/applications', (req, res) => res.json(applications));
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 const port = process.env.PORT || 3001;
-app.listen(port, () => console.log(`Claro API listening on http://localhost:${port}`));
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+  app.listen(port, () => console.log(`Claro API listening on http://localhost:${port}`));
+}
+
+export default app;
